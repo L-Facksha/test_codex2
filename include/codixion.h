@@ -1,5 +1,5 @@
-#ifndef CODIXION
-#   define CODIXION_H
+#ifndef CODIXION_H
+# define CODIXION_H
 
 #include <pthread.h>
 #include <string.h>
@@ -97,10 +97,17 @@ int	fail_cond(t_dongle *dongles, int i);
 
 long get_time_ms();
 
+int	parse_args(int ac, char **av, t_config *config);
+
+int init_resources(t_dongle *dongles, int i, int count);
+int init_dongles(t_dongle *dongles, int count);
+int init_coders(t_coder *coders, t_config *config, t_dongle *dongles);
+
+int creat_thread(t_coder *coders, t_config *config);
 
 void print_status(t_coder *coder, const char *status);
 void print_burnout(t_coder *coder);
-void set_coder_state(t_coder *coder, t_state *state);
+void set_coder_state(t_coder *coder, t_state state);
 void set_simulation_stop(t_config *config, int all_done);
 int should_stop(t_config *config);
 void wake_all_dongles(t_dongle *dongles, int count);

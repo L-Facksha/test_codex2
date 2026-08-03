@@ -1,5 +1,6 @@
 #include "../include/codixion.h"
 
+
 void	cleanup(t_config *config, t_coder *coders, t_dongle *dongels)
 {
 	int	i;
