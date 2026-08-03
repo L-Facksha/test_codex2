@@ -23,7 +23,7 @@ typedef enum s_enum
 typedef struct s_request
 {
     int coder_id;
-    int timesmap;
+    int timestamp;
     int deadline;
 } t_request;
 
@@ -108,4 +108,7 @@ void wake_all_dongles(t_dongle *dongles, int count);
 
 
 void *monitor_routine(void *arg);
+
+int request_has_higher_priority(t_request *f, t_request *s, char *scheduler);
+void heap_swap(t_request *c1, t_request *c2);
 # endif
