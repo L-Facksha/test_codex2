@@ -18,7 +18,7 @@ int heap_push(t_heap *heap, t_request req, char *scheduler)
         heap_swap(&heap->data[current], &heap->data[parent]);
         current = parent;
     }
-    return 0;
+    return 1;
 }
 
 t_request heap_peek(t_heap *heap)
