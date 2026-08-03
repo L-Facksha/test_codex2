@@ -68,3 +68,12 @@ int request_dongles(t_coder *coder, t_dongle *first, t_dongle *second)
     remove_request(coder, right);
     return 0;
 }
+
+void relese_dongle(t_dongle *dongle)
+{
+    pthread_mutex_lock(&dongle->mutex);
+    dongle->taken = 0;
+    dongle->last_released_at = get_time_ms();
+    pthread_cond_broadcast(&dongle->scheduler.cond);
+    pthread_mutex_unlock(&dongle->mutex);
+}

@@ -1,10 +1,34 @@
 #include "../include/codixion.h"
 
+static int routing_for_each_thread(t_coder *coders, t_config *config)
+{
+    int i;
 
+    i = 0;
+    while(i < config->number_of_coders)
+    {
+        if (pthread_create(&coders[i].thread, NULL, coder_routine, &coders[i]) != 0)
+        {
+            set_simulation_stop(config, 0);
+            while (i-- > 0)
+                pthread_join(coders[i].thread, NULL);
+        }
+            
+            return 0;
+        i++;
+    }
+    i = 0;
+    while(i < config->number_of_coders)
+    {
+        if (pthread_join(coders[i].thread, NULL) != 0)
+            return 0;
+        i++;
+    }
+    return 1;
+}
 
 int creat_thread(t_coder *coders, t_config *config)
 {
-    int i;
     t_runtime runtime;
     pthread_t monitor_thread;
 
@@ -22,17 +46,11 @@ int creat_thread(t_coder *coders, t_config *config)
     runtime.config = config;
     if (pthread_create(&monitor_thread, NULL, monitor_routine, &runtime) != 0)
         return 0;
-    i = 0;
-    while(i < config->number_of_coders)
+    if (!routing_for_each_thread(coders, config))
     {
-
-    }
-    i = 0;
-    while(i < config->number_of_coders)
-    {
-        if (pthread_join(coders[i].thread, NULL) != 0)
-            return 0;
-        i++;
+        set_simulation_stop(config, 0);
+        pthread_join(monitor_thread, NULL);
+        return (0);
     }
     pthread_join(monitor_thread, NULL);
     return 1;

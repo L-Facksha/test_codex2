@@ -31,7 +31,7 @@ int init_dongles(t_dongle *dongles, int count)
 		if (pthread_mutex_init(&dongles[i].scheduler.mutex, NULL) != 0)
 			return (fail_scheduler_mutex(dongles, i));
 		if (pthread_cond_init(&dongles[i].scheduler.cond, NULL) != 0)
-			return (fail_cond(&dongles[i].scheduler.cond, i));
+			return (fail_cond(dongles, i));
 		i++;
 	}
 	return 1;
@@ -41,6 +41,7 @@ int init_coders(t_coder *coders, t_config *config, t_dongle *dongles)
 {
 	int i;
 
+	i = 0;
 	while(i < config->number_of_coders)
 	{
 		coders[i].id = i + 1;

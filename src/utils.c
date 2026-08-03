@@ -1,7 +1,7 @@
 #include "../include/codixion.h"
 
 
-void set_coder_state(t_coder *coder, t_state *state)
+void set_coder_state(t_coder *coder, t_state state)
 {
     pthread_mutex_lock(&coder->config->state_mutex);
     coder->state = state;

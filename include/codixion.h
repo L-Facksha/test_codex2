@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
-#include <string.h>
 
 typedef enum s_enum
 {
@@ -116,12 +115,17 @@ int heap_push(t_heap *heap, t_request req, char *scheduler);
 t_request heap_peek(t_heap *heap);
 void heap_pop(t_heap *heap, char *scheduler);
 
+int request_dongles(t_coder *coder, t_dongle *first, t_dongle *second);
+
 void remove_request(t_coder *coder, t_dongle *dongle);
 
 int get_dongles(t_coder *coder, t_dongle *left, t_dongle *right);
 
 void set_wait_time(struct timespec *timeout, long wait_ms);
 
+void relese_dongle(t_dongle *dongle);
+
+void *coder_routine(void *arg);
 
 
 # endif
