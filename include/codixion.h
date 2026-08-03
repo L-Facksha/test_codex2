@@ -116,4 +116,12 @@ int heap_push(t_heap *heap, t_request req, char *scheduler);
 t_request heap_peek(t_heap *heap);
 void heap_pop(t_heap *heap, char *scheduler);
 
+void remove_request(t_coder *coder, t_dongle *dongle);
+
+int get_dongles(t_coder *coder, t_dongle *left, t_dongle *right);
+
+void set_wait_time(struct timespec *timeout, long wait_ms);
+
+
+
 # endif

@@ -1,5 +1,19 @@
 #include "../include/codixion.h"
 
+void set_wait_time(struct timespec *timeout, long wait_ms)
+{
+    struct timeval current;
+
+    gettimeofday(&current, NULL);
+    timeout->tv_sec = current.tv_sec + (wait_ms / 1000);
+    timeout->tv_nsec = (current.tv_usec * 1000) + ((wait_ms % 1000) * 1000000);
+    while (timeout->tv_nsec >= 1000000000)
+    {
+        timeout->tv_nsec -= 1000000000;
+        timeout->tv_sec++;
+    }
+}
+
 static long get_request_deadline(t_coder *coder)
 {
     long now;
@@ -10,77 +24,13 @@ static long get_request_deadline(t_coder *coder)
     return (now + coder->config->time_to_burnout);
 }
 
-static void remove_request(t_coder *coder, t_dongle *dongle)
-{
-    t_heap *heap;
-    int index;
-    int parent;
-    int left_child;
-    int right_child;
-    int best_child;
-
-    pthread_mutex_lock(&dongle->mutex);
-    heap = &dongle->scheduler.pending;
-    index = 0;
-    while(index < heap->size)
-    {
-        if (heap->data[index].coder_id == coder->id)
-            break;
-        index++;
-    }
-    if (index >= heap->size)
-    {
-        pthread_mutex_unlock(&dongle->mutex);
-        return ;
-    }
-    heap->data[index] = heap->data[heap->size - 1];
-    heap->size--;
-    if (heap->size == 0)
-    {
-        pthread_cond_broadcast(&dongle->scheduler.cond);
-        pthread_mutex_unlock(&dongle->mutex);
-        return;
-    }
-    if (index > 0)
-    {
-        parent = (index - 1) / 2;
-        while (index > 0 && request_has_higher_priority(&heap->data[index],
-                &heap->data[parent], coder->config->scheduler))
-        {
-            heap_swap(&heap->data[index], &heap->data[parent]);
-            index = parent;
-            parent = (index - 1) / 2;
-        }
-    }
-    while(1)
-    {
-        left_child = (index * 2) + 1;
-        right_child = left_child + 1;
-        best_child = index;
-        if (left_child < heap->size && request_has_higher_priority(
-            &heap->data[left_child], &heap->data[best_child],
-            coder->config->scheduler))
-            best_child = left_child;
-        if (right_child < heap->size && request_has_higher_priority(
-            &heap->data[right_child], &heap->data[best_child],
-            coder->config->scheduler))
-            best_child = right_child;
-        if (best_child == index)
-            break;
-        heap_swap(&heap->data[index], &heap->data[best_child]);
-        index = best_child;
-    }
-    pthread_cond_broadcast(&dongle->scheduler.cond);
-    pthread_mutex_unlock(&dongle->mutex);
-}
-
 static int push_coder_request(t_coder *coder, t_dongle *dongle)
 {
     t_request req;
 
     req.coder_id = coder->id;
-    req.deadline = get_time_ms() - coder->config->start_time;
-    req.timestamp = get_request_deadline(coder);
+    req.timestamp = get_time_ms() - coder->config->start_time;
+    req.deadline = get_request_deadline(coder);
     pthread_mutex_lock(&dongle->mutex);
     if (!heap_push(&dongle->scheduler.pending, req, coder->config->scheduler))
     {
@@ -96,8 +46,6 @@ int request_dongles(t_coder *coder, t_dongle *first, t_dongle *second)
 {
     t_dongle *left;
     t_dongle *right;
-    struct timespec timeout;
-    long wait_ms;
 
     left = first;
     right = second;
@@ -106,5 +54,17 @@ int request_dongles(t_coder *coder, t_dongle *first, t_dongle *second)
         left = second;
         right = first;
     }
-    if (!)
+    if (!push_coder_request(coder, left) || !push_coder_request(coder, right))
+    {
+        if (left->scheduler.pending.size > 0)
+            remove_request(coder, left);
+        if (right->scheduler.pending.size > 0)
+            remove_request(coder, right);
+        return 0;
+    }
+    if (get_dongles(coder, left, right))
+        return 1;
+    remove_request(coder, left);
+    remove_request(coder, right);
+    return 0;
 }

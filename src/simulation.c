@@ -1,5 +1,7 @@
 #include "../include/codixion.h"
 
+
+
 int creat_thread(t_coder *coders, t_config *config)
 {
     int i;

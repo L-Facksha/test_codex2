@@ -13,7 +13,7 @@ int heap_push(t_heap *heap, t_request req, char *scheduler)
     while (current > 0)
     {
         parent = (current - 1) / 2;
-        if (!request_has_higher_priority(&heap->data[current], &heap->data[parent], scheduler));
+        if (!request_has_higher_priority(&heap->data[current], &heap->data[parent], scheduler))
             break;
         heap_swap(&heap->data[current], &heap->data[parent]);
         current = parent;
@@ -42,8 +42,8 @@ static int get_best_child(t_heap *heap, int current, char *scheduler)
     left = (current * 2) + 1;
     right = left + 1;
 
-    if (right < heap->size && request_has_higher_priority(&heap->data[left], 
-            &heap->data[right], scheduler))
+    if (right < heap->size && request_has_higher_priority(&heap->data[right], 
+            &heap->data[left], scheduler))
         return right;
     return left;        
 }
@@ -58,6 +58,8 @@ void heap_pop(t_heap *heap, char *scheduler)
         return;
     heap->data[0] = heap->data[heap->size - 1];
     heap->size--;
+    if (heap->size == 0)
+        return;
     current = 0;
     left_child = (current * 2) + 1;
     while(left_child < heap->size)
