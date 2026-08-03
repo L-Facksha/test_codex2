@@ -111,4 +111,9 @@ void *monitor_routine(void *arg);
 
 int request_has_higher_priority(t_request *f, t_request *s, char *scheduler);
 void heap_swap(t_request *c1, t_request *c2);
+
+int heap_push(t_heap *heap, t_request req, char *scheduler);
+t_request heap_peek(t_heap *heap);
+void heap_pop(t_heap *heap, char *scheduler);
+
 # endif

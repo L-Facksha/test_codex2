@@ -1,6 +1,9 @@
 #include "../include/codixion.h"
 
-static int 
+static int enqueue_request(t_coder *coder, t_dongle *dongle)
+{
+    
+}
 
 int request_dongles(t_coder *coder, t_dongle *first, t_dongle *second)
 {
@@ -16,5 +19,5 @@ int request_dongles(t_coder *coder, t_dongle *first, t_dongle *second)
         left = second;
         right = first;
     }
-    if (!)
+    if (!heap_push(&))
 }

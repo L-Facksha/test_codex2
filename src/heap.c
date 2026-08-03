@@ -1,6 +1,6 @@
 #include "../include/codixion.h"
 
-int push_heap(t_heap *heap, t_request req, char *scheduler)
+int heap_push(t_heap *heap, t_request req, char *scheduler)
 {
     int current;
     int parent;
