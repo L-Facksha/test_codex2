@@ -10,11 +10,13 @@ static int routing_for_each_thread(t_coder *coders, t_config *config)
         if (pthread_create(&coders[i].thread, NULL, coder_routine, &coders[i]) != 0)
         {
             set_simulation_stop(config, 0);
-            while (i-- > 0)
+            while (i > 0)
+            {
+                i--;
                 pthread_join(coders[i].thread, NULL);
-        }
-            
+            }
             return 0;
+        }
         i++;
     }
     i = 0;
