@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 int	fail_mutex(t_dongle *dongles, int i)
 {

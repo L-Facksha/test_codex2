@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 static int check_burnout(t_coder *coders, t_config *config)
 {

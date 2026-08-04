@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 
 void	cleanup(t_config *config, t_coder *coders, t_dongle *dongels)

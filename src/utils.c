@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 
 void set_coder_state(t_coder *coder, t_state state)

@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 static int can_get_dongle(t_coder *coder, t_dongle *dongle)
 {

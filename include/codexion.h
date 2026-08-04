@@ -1,5 +1,5 @@
-#ifndef CODIXION_H
-# define CODIXION_H
+#ifndef CODEXION_H
+# define CODEXION_H
 
 #include <pthread.h>
 #include <string.h>

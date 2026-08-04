@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 int init_resources(t_dongle *dongles, int i, int count)
 {

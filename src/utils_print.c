@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 void print_status(t_coder *coder, const char *status)
 {

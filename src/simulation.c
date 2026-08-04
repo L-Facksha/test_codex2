@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 static int routing_for_each_thread(t_coder *coders, t_config *config)
 {

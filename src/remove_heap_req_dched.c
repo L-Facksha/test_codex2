@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 static void fix_heap_request2(t_coder *coder, t_heap *heap, int index)
 {

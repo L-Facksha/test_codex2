@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 static int all_coders_done(t_coder *coder)
 {

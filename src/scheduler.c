@@ -1,4 +1,4 @@
-#include "../include/codixion.h"
+#include "../include/codexion.h"
 
 void set_wait_time(struct timespec *timeout, long wait_ms)
 {
