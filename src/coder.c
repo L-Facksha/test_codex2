@@ -62,23 +62,44 @@ static int finish_compile_cycle(t_coder *coder, t_dongle *first, t_dongle *secon
 
 static void helper_routing(t_coder *coder, t_dongle *first, t_dongle *seconde)
 {
-    long now;
 
+    // while (!should_stop(coder->config) && !all_coders_done(coder))
+    // {
+    //     coder->last_compile_start = get_time_ms() - coder->config->start_time;
+    //     if (!request_dongles(coder, first, seconde))
+    //         break;
+    //     if (should_stop(coder->config))
+    //     {
+    //         relese_dongle(first);
+    //         relese_dongle(seconde);
+    //         break;
+    //     }
+    //     set_coder_state(coder, STATE_COMPILING);
+    //     print_status(coder, "is compiling");
+    //     usleep(coder->config->time_to_compile * 1000);
+    //     if (!finish_compile_cycle(coder, first, seconde))
+    //         break;
+    // }
     while (!should_stop(coder->config) && !all_coders_done(coder))
     {
-        now = get_time_ms() - coder->config->start_time;
-        coder->last_compile_start = now;
+        set_coder_state(coder, STATE_WAITING);
+
         if (!request_dongles(coder, first, seconde))
             break;
+
         if (should_stop(coder->config))
         {
             relese_dongle(first);
             relese_dongle(seconde);
             break;
         }
+        coder->last_compile_start =
+            get_time_ms() - coder->config->start_time;
         set_coder_state(coder, STATE_COMPILING);
         print_status(coder, "is compiling");
+
         usleep(coder->config->time_to_compile * 1000);
+
         if (!finish_compile_cycle(coder, first, seconde))
             break;
     }
