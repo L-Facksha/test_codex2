@@ -18,5 +18,6 @@ int request_has_higher_priority(t_request *f, t_request *s, char *scheduler)
     }
     if (f->timestamp != s->timestamp)
         return (f->timestamp < s->timestamp);
-    return (f->coder_id < s->coder_id);
+    /* tie-breaker: lower request_id has higher priority (older request) */
+    return (f->request_id < s->request_id);
 }

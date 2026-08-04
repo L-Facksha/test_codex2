@@ -1,6 +1,5 @@
 #include "../include/codexion.h"
 
-
 void set_coder_state(t_coder *coder, t_state state)
 {
     pthread_mutex_lock(&coder->config->state_mutex);
@@ -8,17 +7,22 @@ void set_coder_state(t_coder *coder, t_state state)
     pthread_mutex_unlock(&coder->config->state_mutex);
 }
 
+/* Set stop flag and wake all dongles so waiting threads exit immediately.
+   We set the flag under state_mutex and then wake outside the mutex. */
 void set_simulation_stop(t_config *config, int all_done)
 {
     pthread_mutex_lock(&config->state_mutex);
     config->stop = 1;
     config->all_done = all_done;
     pthread_mutex_unlock(&config->state_mutex);
+
+    if (config->dongles)
+        wake_all_dongles(config->dongles, config->number_of_coders);
 }
 
 int should_stop(t_config *config)
 {
-    int stop;
+    int stop = 0;
     pthread_mutex_lock(&config->state_mutex);
     stop = config->stop;
     pthread_mutex_unlock(&config->state_mutex);
@@ -30,7 +34,7 @@ void wake_all_dongles(t_dongle *dongles, int count)
     int i;
 
     i = 0;
-    while(i < count)
+    while (i < count)
     {
         pthread_mutex_lock(&dongles[i].mutex);
         pthread_cond_broadcast(&dongles[i].scheduler.cond);

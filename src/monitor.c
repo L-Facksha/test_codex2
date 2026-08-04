@@ -1,3 +1,4 @@
+/* name=src/monitor.c */
 #include "../include/codexion.h"
 
 static int check_burnout(t_coder *coders, t_config *config)
@@ -6,18 +7,35 @@ static int check_burnout(t_coder *coders, t_config *config)
     long now;
 
     i = 0;
-    while(i < config->number_of_coders && !should_stop(config))
+    while (i < config->number_of_coders && !should_stop(config))
     {
         now = get_time_ms() - config->start_time;
-        if (!coders[i].burned_out && coders[i].state == STATE_WAITING
-            && coders[i].last_compile_start >= 0
-            && now - coders[i].last_compile_start >= config->time_to_burnout)
+
+        pthread_mutex_lock(&config->state_mutex);
+        if (config->stop)
         {
-            coders[i].burned_out = 1;
-            set_coder_state(&coders[i], STATE_BOURN_OUT);
-            print_burnout(&coders[i]);
-            set_simulation_stop(config, 0);
-            return -1;
+            pthread_mutex_unlock(&config->state_mutex);
+            return 0;
+        }
+
+        int state = coders[i].state;
+        long last_start = coders[i].last_compile_start;
+        int burned = coders[i].burned_out;
+        pthread_mutex_unlock(&config->state_mutex);
+
+        if (!burned && state == STATE_WAITING)
+        {
+            if (now - last_start >= config->time_to_burnout)
+            {
+                pthread_mutex_lock(&config->state_mutex);
+                coders[i].burned_out = 1;
+                pthread_mutex_unlock(&config->state_mutex);
+
+                set_coder_state(&coders[i], STATE_BURNED_OUT);
+                print_burnout(&coders[i]);
+                set_simulation_stop(config, 0);
+                return -1;
+            }
         }
         i++;
     }
@@ -29,11 +47,11 @@ void *monitor_routine(void *arg)
     t_runtime *runtime;
     t_coder *coders;
     t_config *config;
-    
+
     runtime = (t_runtime *)arg;
     coders = runtime->coders;
     config = runtime->config;
-    while(!should_stop(config))
+    while (!should_stop(config))
     {
         if (check_burnout(coders, config) != 0)
             break;

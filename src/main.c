@@ -54,6 +54,7 @@ int main(int ac, char **av)
     config.start_time = get_time_ms();
     dongles = malloc(sizeof(t_dongle) * config.number_of_coders);
     coders = malloc(sizeof(t_coder) * config.number_of_coders);
+    config.dongles = dongles; /* NEW: expose dongles array via config */
     if (!dongles || !coders)
     {
         free_allocation(coders, dongles);
