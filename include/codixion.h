@@ -119,7 +119,6 @@ void		*coder_routine(void *arg);
 void	remove_request(t_coder *coder, t_dongle *dongle);
 void	set_wait_timeout(struct timespec *timeout, long wait_ms);
 long	get_request_deadline(t_coder *coder);
-static int	can_grant_dongle(t_coder *coder, t_dongle *dongle);
 int	can_grant_pair(t_coder *coder, t_dongle *left, t_dongle *right);
 int	push_coder_request(t_coder *coder, t_dongle *dongle);
 

@@ -15,7 +15,7 @@ SRCS = 	src/main.c \
 		src/coder.c \
 		src/monitor.c \
 		src/remove_request_from_sch.c \
-		scheduler_give_take.c
+		src/scheduler_give_take.c
 
 OBJS = $(SRCS:.c=.o)
 
