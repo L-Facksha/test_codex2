@@ -1,21 +1,33 @@
-#include "../include/codexion.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/30 23:01:39 by azebahad          #+#    #+#             */
+/*   Updated: 2026/08/05 14:02:00 by azebahad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static int ft_atoi(char *nb)
+#include "../include/codixion.h"
+
+static int	ft_atoi(char *nb)
 {
-	int res;
+	int	res;
 
 	res = atoi(nb);
 	if (res <= 0)
 	{
 		printf("Error: Invalid argument format\n");
-		return -1;
+		return (-1);
 	}
-	return res;
+	return (res);
 }
 
 static int	parse_nb(char *nb)
 {
-	int		i;
+	int	i;
 
 	if (!nb)
 		return (-1);
@@ -33,7 +45,7 @@ static int	parse_nb(char *nb)
 		}
 		i++;
 	}
-	return ft_atoi(nb);
+	return (ft_atoi(nb));
 }
 
 static char	*parse_scheduler(char *sch)
@@ -58,7 +70,7 @@ int	parse_args(int ac, char **av, t_config *config)
 	{
 		res = parse_nb(av[i]);
 		if (res == -1)
-			return (0);
+			return (-2);
 		i++;
 	}
 	config->number_of_coders = parse_nb(av[1]);
@@ -70,6 +82,6 @@ int	parse_args(int ac, char **av, t_config *config)
 	config->dongle_cooldown = parse_nb(av[7]);
 	config->scheduler = parse_scheduler(av[8]);
 	if (!config->scheduler)
-		return (0);
+		return (-2);
 	return (1);
 }

@@ -1,120 +1,123 @@
-/* name=src/coder.c */
-#include "../include/codexion.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   coder.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/30 23:02:19 by azebahad          #+#    #+#             */
+/*   Updated: 2026/08/05 16:34:17 by azebahad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/* small helper: initial stagger */
-static void initial_stagger(t_coder *coder)
+#include "../include/codixion.h"
+
+static int	all_coders_done(t_coder *coder)
 {
-    if (coder->config->number_of_coders > 1)
-    {
-        if ((coder->id % 2) == 0)
-            usleep(1000); /* 1 ms */
-    }
+	int	i;
+
+	pthread_mutex_lock(&coder->config->state_mutex);
+	i = 0;
+	while (i < coder->config->number_of_coders)
+	{
+		if (coder->all_coders[i].compiles_done < coder->config->number_of_compiles_required)
+		{
+			pthread_mutex_unlock(&coder->config->state_mutex);
+			return (0);
+		}
+		i++;
+	}
+	pthread_mutex_unlock(&coder->config->state_mutex);
+	return (1);
 }
 
-static int check_stop_after_get(t_coder *coder)
+static int	complet_routine(t_coder *coder, t_dongle *first, t_dongle *second)
 {
-    t_config *cfg = coder->config;
-    if (should_stop(cfg))
-    {
-        relese_dongle(coder->left);
-        if (coder->left != coder->right)
-            relese_dongle(coder->right);
-        return 1;
-    }
-    return 0;
+	if (should_stop(coder->config))
+	{
+		release_dongle(first);
+		release_dongle(second);
+		return (-1);
+	}
+	release_dongle(first);
+	release_dongle(second);
+	set_coder_state(coder, STATE_DEBUGGING);
+	print_status(coder, "is debugging");
+	usleep(coder->config->time_to_debug * 1000);
+	if (should_stop(coder->config))
+		return (-1);
+	set_coder_state(coder, STATE_REFACTORING);
+	print_status(coder, "is refactoring");
+	usleep(coder->config->time_to_refactor * 1000);
+	pthread_mutex_lock(&coder->config->state_mutex);
+	coder->compiles_done++;
+	pthread_mutex_unlock(&coder->config->state_mutex);
+	if (all_coders_done(coder))
+		set_simulation_stop(coder->config, 1);
+	return (0);
 }
 
-static void do_compile_and_release(t_coder *coder)
+static int	start_routine(t_coder *coder, t_dongle *first, t_dongle *second)
 {
-    t_config *cfg = coder->config;
-    print_status(coder, "is compiling");
-    usleep(cfg->time_to_compile * 1000);
-
-    /* Record the time after the compile so burnout is measured from compile finish */
-    pthread_mutex_lock(&cfg->state_mutex);
-    coder->last_compile_start = get_time_ms() - cfg->start_time;
-    pthread_mutex_unlock(&cfg->state_mutex);
-
-    relese_dongle(coder->left);
-    if (coder->left != coder->right)
-        relese_dongle(coder->right);
+	while (!should_stop(coder->config))
+	{
+		if (!request_dongles(coder, first, second))
+			return (-1);
+		pthread_mutex_lock(&coder->config->state_mutex);
+		coder->last_compile_start = get_time_ms() - coder->config->start_time;
+		pthread_mutex_unlock(&coder->config->state_mutex);
+		if (should_stop(coder->config))
+		{
+			release_dongle(first);
+			release_dongle(second);
+			return (-1);
+		}
+		set_coder_state(coder, STATE_COMPILING);
+		print_status(coder, "is compiling");
+		usleep(coder->config->time_to_compile * 1000);
+		if (complet_routine(coder, first, second) == -1)
+			return (-1);
+	}
+	return (0);
 }
 
-static void do_debug_and_refactor(t_coder *coder)
+static int	one_coder(t_coder *coder)
 {
-    t_config *cfg = coder->config;
-    set_coder_state(coder, STATE_DEBUGGING);
-    print_status(coder, "is debugging");
-    usleep(cfg->time_to_debug * 1000);
-
-    set_coder_state(coder, STATE_REFACTORING);
-    print_status(coder, "is refactoring");
-    usleep(cfg->time_to_refactor * 1000);
-
-    /* after refactor, go back to waiting */
-    set_coder_state(coder, STATE_WAITING);
+	if (!should_stop(coder->config) && !all_coders_done(coder))
+	{
+		pthread_mutex_lock(&coder->left->mutex);
+		coder->left->taken = 1;
+		pthread_mutex_unlock(&coder->left->mutex);
+		print_status(coder, "has taken a dongle");
+		pthread_mutex_lock(&coder->config->state_mutex);
+		coder->last_compile_start = get_time_ms() - coder->config->start_time;
+		pthread_mutex_unlock(&coder->config->state_mutex);
+	}
+	return (1);
 }
 
-static int everyone_done(t_config *cfg, t_coder *coders)
+void	*coder_routine(void *arg)
 {
-    int i;
-    for (i = 0; i < cfg->number_of_coders; i++)
-    {
-        if (coders[i].compiles_done < cfg->number_of_compiles_required)
-            return 0;
-    }
-    return 1;
-}
+	t_coder		*coder;
+	t_dongle	*first;
+	t_dongle	*second;
 
-static int check_and_stop_if_done(t_coder *coder)
-{
-    t_config *cfg = coder->config;
-    int stop = 0;
-
-    pthread_mutex_lock(&cfg->state_mutex);
-    coder->compiles_done++;
-    if (cfg->number_of_compiles_required > 0 && everyone_done(cfg, coder->all_coders))
-    {
-        cfg->stop = 1;
-        cfg->all_done = 1;
-        stop = 1;
-    }
-    pthread_mutex_unlock(&cfg->state_mutex);
-
-    if (stop)
-    {
-        /* wake everyone */
-        if (cfg->dongles)
-            wake_all_dongles(cfg->dongles, cfg->number_of_coders);
-    }
-    return stop;
-}
-
-void *coder_routine(void *arg)
-{
-    t_coder *coder = (t_coder *)arg;
-    t_config *cfg = coder->config;
-
-    initial_stagger(coder);
-
-    while (!should_stop(cfg))
-    {
-        if (!request_dongles(coder, coder->left, coder->right))
-            break;
-
-        if (check_stop_after_get(coder))
-            break;
-
-        set_coder_state(coder, STATE_COMPILING);
-        do_compile_and_release(coder);
-
-        if (should_stop(cfg))
-            break;
-
-        do_debug_and_refactor(coder);
-
-        if (check_and_stop_if_done(coder))
-            break;
-    }
-    return NULL;
+	coder = (t_coder *)arg;
+	first = coder->left;
+	second = coder->right;
+	if (first->id > second->id)
+	{
+		first = coder->right;
+		second = coder->left;
+	}
+	if (coder->config->number_of_coders > 1 && (coder->id % 2) == 0)
+		usleep(1000);
+	if (coder->config->number_of_coders == 1)
+	{
+		one_coder(coder);
+		return (NULL);
+	}
+	if (start_routine(coder, first, second) == -1)
+		return (NULL);
+	return (NULL);
 }

@@ -1,23 +1,37 @@
-#include "../include/codexion.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heap_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/30 23:02:08 by azebahad          #+#    #+#             */
+/*   Updated: 2026/08/05 14:00:54 by azebahad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void heap_swap(t_request *c1, t_request *c2)
+#include "../include/codixion.h"
+
+void	heap_swap(t_request *c1, t_request *c2)
 {
-    t_request tmp;
+	t_request	temp;
 
-    tmp = *c1;
-    *c1 = *c2;
-    *c2 = tmp;
+	temp = *c1;
+	*c1 = *c2;
+	*c2 = temp;
 }
 
-int request_has_higher_priority(t_request *f, t_request *s, char *scheduler)
+int	request_has_higher_priority(t_request *f, t_request *s, char *scheduler)
 {
-    if (strcmp(scheduler, "edf") == 0)
-    {
-        if (f->deadline != s->deadline)
-            return (f->deadline < s->deadline);
-    }
-    if (f->timestamp != s->timestamp)
-        return (f->timestamp < s->timestamp);
-    /* tie-breaker: lower request_id has higher priority (older request) */
-    return (f->request_id < s->request_id);
+	if (strcmp(scheduler, "edf") == 0)
+	{
+		if (f->deadline != s->deadline)
+			return (f->deadline < s->deadline);
+		// if (f->timestamp != s->timestamp)
+		// 	return (f->timestamp < s->timestamp);
+		// return (f->coder_id < s->coder_id);
+	}
+	if (f->timestamp != s->timestamp)
+		return (f->timestamp < s->timestamp);
+	return (f->coder_id < s->coder_id);
 }

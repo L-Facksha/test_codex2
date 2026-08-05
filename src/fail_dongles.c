@@ -1,18 +1,31 @@
-/* name=src/fail_dongles.c */
-#include "../include/codexion.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fail_dongles.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/30 23:02:13 by azebahad          #+#    #+#             */
+/*   Updated: 2026/08/05 13:59:18 by azebahad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/* Called when pthread_mutex_init on dongles[i] fails.
-   cleanup_init_dongle(dongles, i) will destroy/ free indices 0..i-1. */
+#include "../include/codixion.h"
+
 int	fail_mutex(t_dongle *dongles, int i)
 {
 	cleanup_init_dongle(dongles, i);
 	return (0);
 }
 
-/* Called when pthread_cond_init on dongles[i] fails. */
+int	fail_scheduler_mutex(t_dongle *dongles, int i)
+{
+	cleanup_init_dongle(dongles, i);
+	return (0);
+}
+
 int	fail_cond(t_dongle *dongles, int i)
 {
-	/* cleanup_init_dongle will destroy mutex/cond for previous indices */
 	cleanup_init_dongle(dongles, i);
 	return (0);
 }

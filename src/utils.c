@@ -1,44 +1,75 @@
-#include "../include/codexion.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/30 23:01:26 by azebahad          #+#    #+#             */
+/*   Updated: 2026/08/05 14:03:13 by azebahad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void set_coder_state(t_coder *coder, t_state state)
+#include "../include/codixion.h"
+
+void	print_status(t_coder *coder, const char *status)
 {
-    pthread_mutex_lock(&coder->config->state_mutex);
-    coder->state = state;
-    pthread_mutex_unlock(&coder->config->state_mutex);
+	long	timestamp;
+
+	pthread_mutex_lock(&coder->config->print_mutex);
+	timestamp = get_time_ms() - coder->config->start_time;
+	printf("%ld %d %s\n", timestamp, coder->id, status);
+	pthread_mutex_unlock(&coder->config->print_mutex);
 }
 
-/* Set stop flag and wake all dongles so waiting threads exit immediately.
-   We set the flag under state_mutex and then wake outside the mutex. */
-void set_simulation_stop(t_config *config, int all_done)
+void	print_burnout(t_coder *coder)
 {
-    pthread_mutex_lock(&config->state_mutex);
-    config->stop = 1;
-    config->all_done = all_done;
-    pthread_mutex_unlock(&config->state_mutex);
+	long	timestamp;
 
-    if (config->dongles)
-        wake_all_dongles(config->dongles, config->number_of_coders);
+	pthread_mutex_lock(&coder->config->print_mutex);
+	timestamp = get_time_ms() - coder->config->start_time;
+	printf("%ld %d burned out\n", timestamp, coder->id);
+	pthread_mutex_unlock(&coder->config->print_mutex);
 }
 
-int should_stop(t_config *config)
+void	set_coder_state(t_coder *coder, t_state state)
 {
-    int stop = 0;
-    pthread_mutex_lock(&config->state_mutex);
-    stop = config->stop;
-    pthread_mutex_unlock(&config->state_mutex);
-    return stop;
+	pthread_mutex_lock(&coder->config->state_mutex);
+	coder->state = state;
+	pthread_mutex_unlock(&coder->config->state_mutex);
 }
 
-void wake_all_dongles(t_dongle *dongles, int count)
+void	set_simulation_stop(t_config *config, int all_done)
 {
-    int i;
+	pthread_mutex_lock(&config->state_mutex);
+	config->stop = 1;
+	config->all_done = all_done;
+	pthread_mutex_unlock(&config->state_mutex);
+	/* Wake all dongles so threads waiting on condition variables exit promptly */
+	if (config->dongles)
+		wake_all_dongles(config->dongles, config->number_of_coders);
+}
 
-    i = 0;
-    while (i < count)
-    {
-        pthread_mutex_lock(&dongles[i].mutex);
-        pthread_cond_broadcast(&dongles[i].scheduler.cond);
-        pthread_mutex_unlock(&dongles[i].mutex);
-        i++;
-    }
+int	should_stop(t_config *config)
+{
+	int	stop;
+
+	pthread_mutex_lock(&config->state_mutex);
+	stop = config->stop;
+	pthread_mutex_unlock(&config->state_mutex);
+	return (stop);
+}
+
+void	wake_all_dongles(t_dongle *dongles, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		pthread_mutex_lock(&dongles[i].mutex);
+		pthread_cond_broadcast(&dongles[i].scheduler.cond);
+		pthread_mutex_unlock(&dongles[i].mutex);
+		i++;
+	}
 }
