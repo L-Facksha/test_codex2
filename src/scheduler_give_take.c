@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scheduler_give_take.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/06 00:46:21 by azebahad          #+#    #+#             */
+/*   Updated: 2026/08/06 00:48:53 by azebahad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/codixion.h"
 
 void	set_wait_timeout(struct timespec *timeout, long wait_ms)
@@ -46,7 +58,7 @@ int	can_grant_pair(t_coder *coder, t_dongle *left, t_dongle *right)
 
 int	push_coder_request(t_coder *coder, t_dongle *dongle)
 {
-	t_request req;
+	t_request	req;
 
 	req.coder_id = coder->id;
 	req.timestamp = get_time_ms() - coder->config->start_time;

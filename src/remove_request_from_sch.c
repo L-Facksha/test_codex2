@@ -12,14 +12,13 @@
 
 #include "../include/codixion.h"
 
-static void fix_heap_after_removal(t_heap *heap, t_coder *coder, int index)
+static void	fix_heap_after_removal(t_heap *heap, t_coder *coder, int index)
 {
+	int	left_child;
+	int	right_child;
+	int	best_child;
 
-	int		left_child;
-	int		right_child;
-	int		best_child;
-
-    while (1)
+	while (1)
 	{
 		left_child = (index * 2) + 1;
 		right_child = left_child + 1;
@@ -33,24 +32,24 @@ static void fix_heap_after_removal(t_heap *heap, t_coder *coder, int index)
 				&heap->data[best_child], coder->config->scheduler))
 			best_child = right_child;
 		if (best_child == index)
-			return;
+			return ;
 		heap_swap(&heap->data[index], &heap->data[best_child]);
 		index = best_child;
 	}
 }
 
-static int	replace_the_removal(t_heap *heap, t_dongle *dongle, t_coder *coder, int index)
+static int	replace_the_removal(t_heap *heap, t_dongle *dongle, t_coder *coder,
+		int index)
 {
+	int	parent;
 
-	int		parent;
-
-    heap->data[index] = heap->data[heap->size - 1];
+	heap->data[index] = heap->data[heap->size - 1];
 	heap->size--;
 	if (heap->size == 0)
 	{
 		pthread_cond_broadcast(&dongle->scheduler.cond);
 		pthread_mutex_unlock(&dongle->mutex);
-		return -1;
+		return (-1);
 	}
 	if (index > 0)
 	{
@@ -63,9 +62,8 @@ static int	replace_the_removal(t_heap *heap, t_dongle *dongle, t_coder *coder, i
 			parent = (index - 1) / 2;
 		}
 	}
-    fix_heap_after_removal(heap, coder, index);
-    return 0;
-	
+	fix_heap_after_removal(heap, coder, index);
+	return (0);
 }
 
 void	remove_request(t_coder *coder, t_dongle *dongle)
@@ -88,7 +86,7 @@ void	remove_request(t_coder *coder, t_dongle *dongle)
 		return ;
 	}
 	if (replace_the_removal(heap, dongle, coder, index) == -1)
-        return;
+		return ;
 	pthread_cond_broadcast(&dongle->scheduler.cond);
 	pthread_mutex_unlock(&dongle->mutex);
 }

@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:02:19 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 23:19:25 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/06 00:49:04 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static int	all_coders_done(t_coder *coder)
 	i = 0;
 	while (i < coder->config->number_of_coders)
 	{
-		if (coder->all_coders[i].compiles_done < coder->config->number_of_compiles_required)
+		if (coder->all_coders[i].compiles_done
+			< coder->config->number_of_compiles_required)
 		{
 			pthread_mutex_unlock(&coder->config->state_mutex);
 			return (0);

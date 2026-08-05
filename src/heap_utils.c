@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:02:08 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 14:00:54 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/06 00:47:56 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,6 @@ int	request_has_higher_priority(t_request *f, t_request *s, char *scheduler)
 	{
 		if (f->deadline != s->deadline)
 			return (f->deadline < s->deadline);
-		// if (f->timestamp != s->timestamp)
-		// 	return (f->timestamp < s->timestamp);
-		// return (f->coder_id < s->coder_id);
 	}
 	if (f->timestamp != s->timestamp)
 		return (f->timestamp < s->timestamp);
