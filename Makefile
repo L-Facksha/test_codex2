@@ -16,7 +16,8 @@ SRCS = 	src/main.c \
 		src/monitor.c \
 		src/remove_request_from_sch.c \
 		src/scheduler_give_take.c \
-		src/print_status.c
+		src/print_status.c \
+		src/release_dongle.c
 
 OBJS = $(SRCS:.c=.o)
 
