@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:39 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 14:02:00 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/06 12:24:20 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	ft_atoi(char *nb)
 	int	res;
 
 	res = atoi(nb);
-	if (res <= 0)
+	if (res < 0)
 	{
 		printf("Error: Invalid argument format\n");
 		return (-1);
@@ -58,6 +58,24 @@ static char	*parse_scheduler(char *sch)
 	return (NULL);
 }
 
+static int	take_data(char **av, t_config *config)
+{
+	config->number_of_coders = parse_nb(av[1]);
+	config->time_to_burnout = parse_nb(av[2]);
+	config->time_to_compile = parse_nb(av[3]);
+	config->time_to_debug = parse_nb(av[4]);
+	config->time_to_refactor = parse_nb(av[5]);
+	config->number_of_compiles_required = parse_nb(av[6]);
+	config->dongle_cooldown = parse_nb(av[7]);
+	config->scheduler = parse_scheduler(av[8]);
+	if (config->number_of_coders <= 0
+		|| config->number_of_compiles_required <= 0)
+		return (-2);
+	if (!config->scheduler)
+		return (-2);
+	return (1);
+}
+
 int	parse_args(int ac, char **av, t_config *config)
 {
 	int	i;
@@ -73,15 +91,5 @@ int	parse_args(int ac, char **av, t_config *config)
 			return (-2);
 		i++;
 	}
-	config->number_of_coders = parse_nb(av[1]);
-	config->time_to_burnout = parse_nb(av[2]);
-	config->time_to_compile = parse_nb(av[3]);
-	config->time_to_debug = parse_nb(av[4]);
-	config->time_to_refactor = parse_nb(av[5]);
-	config->number_of_compiles_required = parse_nb(av[6]);
-	config->dongle_cooldown = parse_nb(av[7]);
-	config->scheduler = parse_scheduler(av[8]);
-	if (!config->scheduler)
-		return (-2);
-	return (1);
+	return (take_data(av, config));
 }

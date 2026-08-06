@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:14 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/06 00:44:10 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/06 13:21:41 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,11 @@ int	create_threads(t_coder *coders, t_config *config)
 	config->state_mutex_inited = 1;
 	config->stop = 0;
 	config->all_done = 0;
+	if (config->time_to_burnout == 0)
+	{
+		print_burnout(coders);
+		return (0);
+	}
 	if (!full_routine(config, coders))
 		return (0);
 	return (1);
