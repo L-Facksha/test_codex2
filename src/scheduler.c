@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:34 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 23:21:10 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/06 01:01:24 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,4 @@ int	request_dongles(t_coder *coder, t_dongle *first, t_dongle *second)
 	remove_request(coder, left);
 	remove_request(coder, right);
 	return (0);
-}
-
-void	release_dongle(t_dongle *dongle)
-{
-	pthread_mutex_lock(&dongle->mutex);
-	dongle->taken = 0;
-	dongle->last_released_at = get_time_ms();
-	pthread_cond_broadcast(&dongle->scheduler.cond);
-	pthread_mutex_unlock(&dongle->mutex);
 }
