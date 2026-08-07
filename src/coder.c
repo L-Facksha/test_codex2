@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:02:19 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/06 13:22:26 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/07 17:44:47 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,6 @@ static int	start_routine(t_coder *coder, t_dongle *first, t_dongle *second)
 	while (!should_stop(coder->config))
 	{
 		set_coder_state(coder, STATE_WAITING);
-		pthread_mutex_lock(&coder->config->state_mutex);
-		coder->last_compile_start = get_time_ms() - coder->config->start_time;
-		pthread_mutex_unlock(&coder->config->state_mutex);
 		if (!request_dongles(coder, first, second))
 			return (-1);
 		if (should_stop(coder->config))
@@ -74,6 +71,9 @@ static int	start_routine(t_coder *coder, t_dongle *first, t_dongle *second)
 			release_dongle(second);
 			return (-1);
 		}
+		pthread_mutex_lock(&coder->config->state_mutex);
+		coder->last_compile_start = get_time_ms() - coder->config->start_time;
+		pthread_mutex_unlock(&coder->config->state_mutex);
 		set_coder_state(coder, STATE_COMPILING);
 		print_status(coder, "is compiling");
 		usleep(coder->config->time_to_compile * 1000);

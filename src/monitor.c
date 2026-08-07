@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:45 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/06 11:42:14 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/07 15:56:05 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	catch_burnout(t_coder *coders, t_config *config, long now, int i)
 {
 	pthread_mutex_lock(&config->state_mutex);
-	if (!coders[i].burned_out && coders[i].state == STATE_WAITING
+	if (!coders[i].burned_out && coders[i].state != STATE_COMPILING
 		&& coders[i].last_compile_start >= 0 && now
 		- coders[i].last_compile_start >= config->time_to_burnout)
 	{
