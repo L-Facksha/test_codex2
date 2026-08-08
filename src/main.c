@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:50 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 14:01:27 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 19:16:34 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	main(int ac, char **av)
 		cleanup(&config, coders, dongles);
 		return (1);
 	}
+	config.dongles = dongles;
 	if (!init_dongles(dongles, config.number_of_coders) || !init_coders(coders,
 			dongles, &config) || !create_threads(coders, &config))
 	{

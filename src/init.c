@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:56 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 14:01:16 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 21:02:28 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ int	init_dongles(t_dongle *dongles, int count)
 			return (0);
 		if (pthread_mutex_init(&dongles[i].mutex, NULL) != 0)
 			return (fail_mutex(dongles, i));
-		if (pthread_mutex_init(&dongles[i].scheduler.mutex, NULL) != 0)
-			return (fail_scheduler_mutex(dongles, i));
 		if (pthread_cond_init(&dongles[i].scheduler.cond, NULL) != 0)
 			return (fail_cond(dongles, i));
 		i++;

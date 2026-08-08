@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 13:23:06 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/08 16:46:10 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 19:14:56 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct s_heap
 
 typedef struct s_scheduler
 {
-	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
 	t_heap			pending;
 }					t_scheduler;
@@ -119,7 +118,6 @@ void				cleanup(t_config *config, t_coder *coders,
 						t_dongle *dongels);
 void				cleanup_init_dongle(t_dongle *dongle, int count);
 int					fail_mutex(t_dongle *dongles, int i);
-int					fail_scheduler_mutex(t_dongle *dongles, int i);
 int					fail_cond(t_dongle *dongles, int i);
 void				heap_swap(t_request *c1, t_request *c2);
 int					request_has_higher_priority(t_request *f, t_request *s,

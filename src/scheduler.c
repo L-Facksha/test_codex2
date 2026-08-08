@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:34 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/06 01:01:24 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 22:05:02 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,19 +61,17 @@ static void	check_cooldown(long left_last, long right_last, t_coder *coder,
 		*wait_ms = left_wait;
 	else
 		*wait_ms = right_wait;
+	if (*wait_ms > 50)
+		*wait_ms = 50;
 }
 
 static void	wait_for_cooldown(t_dongle *left, t_dongle *right, long wait_ms)
 {
-	struct timespec	timeout;
-
-	set_wait_timeout(&timeout, wait_ms);
-	pthread_mutex_lock(&left->mutex);
-	pthread_cond_timedwait(&left->scheduler.cond, &left->mutex, &timeout);
-	pthread_mutex_unlock(&left->mutex);
-	pthread_mutex_lock(&right->mutex);
-	pthread_cond_timedwait(&right->scheduler.cond, &right->mutex, &timeout);
-	pthread_mutex_unlock(&right->mutex);
+	(void)left;
+	(void)right;
+	if (wait_ms > 5)
+		wait_ms = 5;
+	usleep(wait_ms * 1000);
 }
 
 static int	wait_for_dongles(t_coder *coder, t_dongle *left, t_dongle *right)
@@ -98,6 +96,7 @@ static int	wait_for_dongles(t_coder *coder, t_dongle *left, t_dongle *right)
 			pthread_mutex_unlock(&right->mutex);
 		}
 		check_cooldown(left_last, right_last, coder, &wait_ms);
+		// usleep(1000);
 		wait_for_cooldown(left, right, wait_ms);
 	}
 	return (0);
