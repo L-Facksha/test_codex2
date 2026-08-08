@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:02:23 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/08 19:12:05 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 22:21:58 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	cleanup(t_config *config, t_coder *coders, t_dongle *dongels)
 			if (dongels[i].scheduler.pending.data)
 				free(dongels[i].scheduler.pending.data);
 			pthread_mutex_destroy(&dongels[i].mutex);
-			pthread_cond_destroy(&dongels[i].scheduler.cond);
 			i++;
 		}
 		free(dongels);
@@ -45,7 +44,6 @@ void	cleanup_init_dongle(t_dongle *dongle, int count)
 	while (i < count)
 	{
 		pthread_mutex_destroy(&dongle[i].mutex);
-		pthread_cond_destroy(&dongle[i].scheduler.cond);
 		if (dongle[i].scheduler.pending.data)
 			free(dongle[i].scheduler.pending.data);
 		i++;

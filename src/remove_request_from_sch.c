@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 18:35:46 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/05 18:47:33 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 22:22:14 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ static int	replace_the_removal(t_heap *heap, t_dongle *dongle, t_coder *coder,
 	heap->size--;
 	if (heap->size == 0)
 	{
-		pthread_cond_broadcast(&dongle->scheduler.cond);
 		pthread_mutex_unlock(&dongle->mutex);
 		return (-1);
 	}
@@ -87,6 +86,5 @@ void	remove_request(t_coder *coder, t_dongle *dongle)
 	}
 	if (replace_the_removal(heap, dongle, coder, index) == -1)
 		return ;
-	pthread_cond_broadcast(&dongle->scheduler.cond);
 	pthread_mutex_unlock(&dongle->mutex);
 }

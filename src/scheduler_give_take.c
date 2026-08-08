@@ -6,25 +6,11 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 00:46:21 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/08 21:56:46 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 22:42:16 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codixion.h"
-
-void	set_wait_timeout(struct timespec *timeout, long wait_ms)
-{
-	struct timeval	current;
-
-	gettimeofday(&current, NULL);
-	timeout->tv_sec = current.tv_sec + (wait_ms / 1000);
-	timeout->tv_nsec = (current.tv_usec * 1000) + ((wait_ms % 1000) * 1000000);
-	while (timeout->tv_nsec >= 1000000000)
-	{
-		timeout->tv_nsec -= 1000000000;
-		timeout->tv_sec++;
-	}
-}
 
 long	get_request_deadline(t_coder *coder)
 {
@@ -69,7 +55,6 @@ int	push_coder_request(t_coder *coder, t_dongle *dongle)
 		pthread_mutex_unlock(&dongle->mutex);
 		return (0);
 	}
-	pthread_cond_broadcast(&dongle->scheduler.cond);
 	pthread_mutex_unlock(&dongle->mutex);
 	return (1);
 }

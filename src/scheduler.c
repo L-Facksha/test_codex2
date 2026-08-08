@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:34 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/08 22:05:02 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 22:11:11 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ static int	get_pair(t_coder *coder, t_dongle *left, t_dongle *right)
 		right->taken = 1;
 		heap_pop(&left->scheduler.pending, coder->config->scheduler);
 		heap_pop(&right->scheduler.pending, coder->config->scheduler);
-		pthread_cond_broadcast(&left->scheduler.cond);
-		pthread_cond_broadcast(&right->scheduler.cond);
 		pthread_mutex_unlock(&right->mutex);
 		pthread_mutex_unlock(&left->mutex);
 		print_status(coder, "has taken a dongle");
@@ -65,15 +63,6 @@ static void	check_cooldown(long left_last, long right_last, t_coder *coder,
 		*wait_ms = 50;
 }
 
-static void	wait_for_cooldown(t_dongle *left, t_dongle *right, long wait_ms)
-{
-	(void)left;
-	(void)right;
-	if (wait_ms > 5)
-		wait_ms = 5;
-	usleep(wait_ms * 1000);
-}
-
 static int	wait_for_dongles(t_coder *coder, t_dongle *left, t_dongle *right)
 {
 	long	left_last;
@@ -96,8 +85,9 @@ static int	wait_for_dongles(t_coder *coder, t_dongle *left, t_dongle *right)
 			pthread_mutex_unlock(&right->mutex);
 		}
 		check_cooldown(left_last, right_last, coder, &wait_ms);
-		// usleep(1000);
-		wait_for_cooldown(left, right, wait_ms);
+		if (wait_ms > 5)
+			wait_ms = 5;
+		usleep(wait_ms * 1000);
 	}
 	return (0);
 }

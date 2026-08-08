@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 13:23:06 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/08 19:14:56 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 22:43:02 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct s_heap
 
 typedef struct s_scheduler
 {
-	pthread_cond_t	cond;
 	t_heap			pending;
 }					t_scheduler;
 
@@ -113,12 +112,10 @@ void				set_coder_state(t_coder *coder, t_state state);
 void				set_simulation_stop(t_config *config, int all_done);
 int					should_stop(t_config *config);
 int					coder_done(t_coder *coder);
-void				wake_all_dongles(t_dongle *dongles, int count);
 void				cleanup(t_config *config, t_coder *coders,
 						t_dongle *dongels);
 void				cleanup_init_dongle(t_dongle *dongle, int count);
 int					fail_mutex(t_dongle *dongles, int i);
-int					fail_cond(t_dongle *dongles, int i);
 void				heap_swap(t_request *c1, t_request *c2);
 int					request_has_higher_priority(t_request *f, t_request *s,
 						char *scheduler);
@@ -131,7 +128,6 @@ void				release_dongle(t_dongle *dongle);
 void				*monitor_routine(void *arg);
 void				*coder_routine(void *arg);
 void				remove_request(t_coder *coder, t_dongle *dongle);
-void				set_wait_timeout(struct timespec *timeout, long wait_ms);
 long				get_request_deadline(t_coder *coder);
 int					can_grant_pair(t_coder *coder, t_dongle *left,
 						t_dongle *right);

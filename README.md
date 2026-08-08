@@ -91,7 +91,6 @@ Output is serialized so lines from different coders never interleave.
 ## Resources
 
 - *man pages*: `pthread_create(3)`, `pthread_mutex_lock(3)`,
-  `pthread_cond_wait(3)`, `pthread_cond_timedwait(3)`, `pthread_cond_signal(3)`,
   `gettimeofday(2)`, `clock_gettime(2)`
 - <https://youtu.be/d9s_d28yJq0?si=r2H_P6SR03toTYqa>
 - <https://man7.org/linux/man-pages/man7/pthreads.7.html>
@@ -102,7 +101,7 @@ Output is serialized so lines from different coders never interleave.
 
 An AI assistant was used during this project to help
 understand POSIX threading concepts explaining primitives such as
-`pthread_t`, `pthread_mutex_t`, and `pthread_cond_t`, how they interact, and
+`pthread_t`, `pthread_mutex_t`, and how they interact, and
 how thread processes and synchronization work in general, before writing and
 implementing the code myself.
 
@@ -134,18 +133,17 @@ coder, keeping the burnout log within the required 10 ms window.
 coders' lines can never interleave.
 
 ## Thread synchronization mechanisms
-
+ 
 | Primitive | Where | Purpose |
 |---|---|---|
 | `pthread_mutex_t` (per dongle) | dongle struct | Protects `taken`, `last_released_at`, and the pending-request heap |
-| `pthread_cond_t` (per dongle) | dongle struct | Lets a waiting coder sleep instead of busy-polling |
 | `pthread_mutex_t` (state) | config struct | Protects shared coder state read by the monitor |
 | `pthread_mutex_t` (print) | config struct | Serializes log output |
-
+ 
 **Preventing race conditions on a dongle.** `taken` is only ever read or
 written while its mutex is held, so the check and the take happen in one
 atomic step two coders can never both see it free and both grab it:
-
+ 
 ```c
 pthread_mutex_lock(&left->mutex);
 pthread_mutex_lock(&right->mutex);
@@ -157,17 +155,45 @@ if (can_grant_pair(coder, left, right))
 pthread_mutex_unlock(&right->mutex);
 pthread_mutex_unlock(&left->mutex);
 ```
-
+ 
 **Thread-safe communication between coders and the monitor.** Coders and the
 monitor thread share each coder's phase, `last_compile_start`, and
-burned-out flag through the same state mutex the monitor always reads a
-consistent, up-to-date value, never a stale or half-written one. When a
-dongle is released, `pthread_cond_broadcast()` wakes any coder waiting on it:
-
+burned-out flag through the same state mutex, so the monitor always reads a
+consistent, up-to-date value, never a stale or half-written one. Dongles are
+protected the same way: `taken` and `last_released_at` are only ever read or
+written while holding that dongle's mutex, so a release is always fully
+visible before any other thread can observe it:
+ 
 ```c
-pthread_mutex_lock(&dongle->mutex);
-dongle->taken = 0;
-dongle->last_released_at = get_time_ms();
-pthread_cond_broadcast(&dongle->scheduler.cond);
-pthread_mutex_unlock(&dongle->mutex);
+void	release_dongle(t_dongle *dongle)
+{
+	pthread_mutex_lock(&dongle->mutex);
+	dongle->taken = 0;
+	dongle->last_released_at = get_time_ms();
+	pthread_mutex_unlock(&dongle->mutex);
+}
 ```
+ 
+**Discovering availability: bounded polling instead of condition
+variables.** An earlier version of this project used `pthread_cond_t` and
+`pthread_cond_timedwait()` to sleep a coder until a dongle was released or a
+cooldown-based timeout expired. That design was replaced with a simple
+bounded polling loop, both to simplify the reasoning about correctness and
+to avoid the missed-wake-up class of bug entirely (a broadcast firing in the
+narrow window between waiting on the left dongle and starting to wait on the
+right one could otherwise leave a coder blocked for up to the full
+`dongle_cooldown`):
+ 
+```c
+check_cooldown(left_last, right_last, coder, &wait_ms);
+if (wait_ms > 5)
+	wait_ms = 5;
+usleep(wait_ms * 1000);
+```
+ 
+`wait_ms` is derived from the dongle's remaining cooldown and then capped at
+5ms, so a coder can never go longer than that without re-checking
+`should_stop()` and re-attempting to acquire its pair under the mutex. The
+trade-off is a small, bounded amount of extra CPU spent polling in exchange
+for a synchronization design with no blocking-wait edge cases to reason
+about.
