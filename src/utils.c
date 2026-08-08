@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:01:26 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/06 00:59:39 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 16:44:27 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,16 @@ int	should_stop(t_config *config)
 	stop = config->stop;
 	pthread_mutex_unlock(&config->state_mutex);
 	return (stop);
+}
+
+int	coder_done(t_coder *coder)
+{
+	int	done;
+
+	pthread_mutex_lock(&coder->config->state_mutex);
+	done = coder->compiles_done >= coder->config->number_of_compiles_required;
+	pthread_mutex_unlock(&coder->config->state_mutex);
+	return (done);
 }
 
 void	wake_all_dongles(t_dongle *dongles, int count)

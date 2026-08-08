@@ -1,0 +1,251 @@
+0 1 has taken a dongle
+0 1 has taken a dongle
+0 1 is compiling
+0 3 has taken a dongle
+0 3 has taken a dongle
+0 3 is compiling
+200 1 is debugging
+200 3 is debugging
+400 1 is refactoring
+400 3 is refactoring
+600 5 has taken a dongle
+600 5 has taken a dongle
+600 5 is compiling
+600 2 has taken a dongle
+600 2 has taken a dongle
+600 2 is compiling
+800 5 is debugging
+800 2 is debugging
+1000 5 is refactoring
+1000 2 is refactoring
+1200 4 has taken a dongle
+1200 4 has taken a dongle
+1200 4 is compiling
+1200 1 has taken a dongle
+1200 1 has taken a dongle
+1200 1 is compiling
+1400 4 is debugging
+1400 1 is debugging
+1600 4 is refactoring
+1600 1 is refactoring
+1800 3 has taken a dongle
+1800 3 has taken a dongle
+1800 3 is compiling
+1800 5 has taken a dongle
+1800 5 has taken a dongle
+1800 5 is compiling
+2000 3 is debugging
+2000 5 is debugging
+2200 3 is refactoring
+2200 5 is refactoring
+2400 4 has taken a dongle
+2400 4 has taken a dongle
+2400 4 is compiling
+2401 2 has taken a dongle
+2401 2 has taken a dongle
+2401 2 is compiling
+2600 4 is debugging
+2601 2 is debugging
+2800 4 is refactoring
+2801 2 is refactoring
+3001 3 has taken a dongle
+3001 3 has taken a dongle
+3001 3 is compiling
+3001 1 has taken a dongle
+3001 1 has taken a dongle
+3001 1 is compiling
+3201 3 is debugging
+3201 1 is debugging
+3401 3 is refactoring
+3401 1 is refactoring
+3601 5 has taken a dongle
+3601 5 has taken a dongle
+3601 5 is compiling
+3601 2 has taken a dongle
+3601 2 has taken a dongle
+3601 2 is compiling
+3801 5 is debugging
+3801 2 is debugging
+4001 5 is refactoring
+4001 2 is refactoring
+4201 4 has taken a dongle
+4201 4 has taken a dongle
+4201 4 is compiling
+4201 1 has taken a dongle
+4201 1 has taken a dongle
+4201 1 is compiling
+4401 4 is debugging
+4401 1 is debugging
+4601 4 is refactoring
+4601 1 is refactoring
+4801 3 has taken a dongle
+4801 3 has taken a dongle
+4801 3 is compiling
+4801 5 has taken a dongle
+4801 5 has taken a dongle
+4801 5 is compiling
+5001 3 is debugging
+5001 5 is debugging
+5201 3 is refactoring
+5201 5 is refactoring
+5401 4 has taken a dongle
+5401 4 has taken a dongle
+5401 4 is compiling
+5401 2 has taken a dongle
+5401 2 has taken a dongle
+5401 2 is compiling
+5602 4 is debugging
+5602 2 is debugging
+5802 4 is refactoring
+5802 2 is refactoring
+6002 3 has taken a dongle
+6002 3 has taken a dongle
+6002 3 is compiling
+6003 1 has taken a dongle
+6003 1 has taken a dongle
+6003 1 is compiling
+6202 3 is debugging
+6203 1 is debugging
+6402 3 is refactoring
+6403 1 is refactoring
+6603 5 has taken a dongle
+6603 5 has taken a dongle
+6603 5 is compiling
+6603 2 has taken a dongle
+6603 2 has taken a dongle
+6603 2 is compiling
+6803 5 is debugging
+6803 2 is debugging
+7003 5 is refactoring
+7003 2 is refactoring
+7203 1 has taken a dongle
+7203 1 has taken a dongle
+7203 1 is compiling
+7204 4 has taken a dongle
+7204 4 has taken a dongle
+7204 4 is compiling
+7403 1 is debugging
+7404 4 is debugging
+7603 1 is refactoring
+7604 4 is refactoring
+7804 5 has taken a dongle
+7804 5 has taken a dongle
+7804 5 is compiling
+7804 3 has taken a dongle
+7805 3 has taken a dongle
+7805 3 is compiling
+8004 5 is debugging
+8005 3 is debugging
+8204 5 is refactoring
+8205 3 is refactoring
+8405 2 has taken a dongle
+8405 2 has taken a dongle
+8405 2 is compiling
+8405 4 has taken a dongle
+8405 4 has taken a dongle
+8405 4 is compiling
+8605 2 is debugging
+8605 4 is debugging
+8805 2 is refactoring
+8805 4 is refactoring
+9005 3 has taken a dongle
+9005 3 has taken a dongle
+9005 3 is compiling
+9005 1 has taken a dongle
+9005 1 has taken a dongle
+9005 1 is compiling
+9205 3 is debugging
+9205 1 is debugging
+9405 3 is refactoring
+9405 1 is refactoring
+9605 5 has taken a dongle
+9605 5 has taken a dongle
+9605 5 is compiling
+9605 2 has taken a dongle
+9605 2 has taken a dongle
+9605 2 is compiling
+9805 5 is debugging
+9805 2 is debugging
+10005 5 is refactoring
+10005 2 is refactoring
+10205 1 has taken a dongle
+10205 1 has taken a dongle
+10205 1 is compiling
+10205 4 has taken a dongle
+10205 4 has taken a dongle
+10205 4 is compiling
+10405 1 is debugging
+10405 4 is debugging
+10605 1 is refactoring
+10605 4 is refactoring
+10805 3 has taken a dongle
+10805 3 has taken a dongle
+10805 3 is compiling
+10805 5 has taken a dongle
+10805 5 has taken a dongle
+10805 5 is compiling
+11005 3 is debugging
+11006 5 is debugging
+11205 3 is refactoring
+11206 5 is refactoring
+11405 2 has taken a dongle
+11405 2 has taken a dongle
+11405 2 is compiling
+11406 4 has taken a dongle
+11406 4 has taken a dongle
+11406 4 is compiling
+11605 2 is debugging
+11606 4 is debugging
+11805 2 is refactoring
+11806 4 is refactoring
+12005 1 has taken a dongle
+12005 1 has taken a dongle
+12005 1 is compiling
+12006 3 has taken a dongle
+12006 3 has taken a dongle
+12006 3 is compiling
+12205 1 is debugging
+12207 3 is debugging
+12405 1 is refactoring
+12407 3 is refactoring
+12605 5 has taken a dongle
+12605 5 has taken a dongle
+12605 5 is compiling
+12607 2 has taken a dongle
+12607 2 has taken a dongle
+12607 2 is compiling
+12805 5 is debugging
+12807 2 is debugging
+13005 5 is refactoring
+13007 2 is refactoring
+13205 4 has taken a dongle
+13205 4 has taken a dongle
+13205 4 is compiling
+13207 1 has taken a dongle
+13207 1 has taken a dongle
+13207 1 is compiling
+13405 4 is debugging
+13407 1 is debugging
+13605 4 is refactoring
+13607 1 is refactoring
+13805 3 has taken a dongle
+13805 3 has taken a dongle
+13805 3 is compiling
+13807 5 has taken a dongle
+13807 5 has taken a dongle
+13807 5 is compiling
+14005 3 is debugging
+14007 5 is debugging
+14205 3 is refactoring
+14208 5 is refactoring
+14405 2 has taken a dongle
+14405 2 has taken a dongle
+14405 2 is compiling
+14407 4 has taken a dongle
+14407 4 has taken a dongle
+14407 4 is compiling
+14605 2 is debugging
+14607 4 is debugging
+14805 2 is refactoring
+14807 4 is refactoring
+16207 1 burned out

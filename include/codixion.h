@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 13:23:06 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/06 13:23:41 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/08 16:46:10 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void				print_burnout(t_coder *coder);
 void				set_coder_state(t_coder *coder, t_state state);
 void				set_simulation_stop(t_config *config, int all_done);
 int					should_stop(t_config *config);
+int					coder_done(t_coder *coder);
 void				wake_all_dongles(t_dongle *dongles, int count);
 void				cleanup(t_config *config, t_coder *coders,
 						t_dongle *dongels);
@@ -126,7 +127,6 @@ int					request_has_higher_priority(t_request *f, t_request *s,
 int					heap_push(t_heap *heap, t_request req, char *scheduler);
 void				heap_pop(t_heap *heap, char *scheduler);
 t_request			heap_peek(t_heap *heap);
-int					request_dongle(t_coder *coder, t_dongle *dongle);
 int					request_dongles(t_coder *coder, t_dongle *first,
 						t_dongle *second);
 void				release_dongle(t_dongle *dongle);
