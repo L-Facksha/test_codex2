@@ -6,7 +6,7 @@
 /*   By: azebahad <azebahad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/30 23:02:19 by azebahad          #+#    #+#             */
-/*   Updated: 2026/08/08 23:08:20 by azebahad         ###   ########.fr       */
+/*   Updated: 2026/08/10 11:04:06 by azebahad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,27 @@ static int	all_coders_done(t_coder *coder)
 	return (1);
 }
 
+static int	sleep_interruptible(t_coder *coder, long duration_ms)
+{
+	long	start;
+
+	start = get_time_ms();
+	while (get_time_ms() - start < duration_ms)
+	{
+		if (should_stop(coder->config))
+			return (0);
+		usleep(1000);
+	}
+	return (1);
+}
+
 static int	complet_routine(t_coder *coder, t_dongle *first, t_dongle *second)
 {
 	set_coder_state(coder, STATE_COMPILING);
 	print_status(coder, "is compiling");
-	usleep(coder->config->time_to_compile * 1000);
+	// usleep(coder->config->time_to_compile * 1000);
+	if (!sleep_interruptible(coder, coder->config->time_to_compile))
+		return (0);
 	pthread_mutex_lock(&coder->config->state_mutex);
 	coder->compiles_done++;
 	pthread_mutex_unlock(&coder->config->state_mutex);
@@ -50,12 +66,16 @@ static int	complet_routine(t_coder *coder, t_dongle *first, t_dongle *second)
 	release_dongle(second);
 	set_coder_state(coder, STATE_DEBUGGING);
 	print_status(coder, "is debugging");
-	usleep(coder->config->time_to_debug * 1000);
+	// usleep(coder->config->time_to_debug * 1000);
+	if (!sleep_interruptible(coder, coder->config->time_to_debug))
+		return (0);
 	if (should_stop(coder->config))
 		return (-1);
 	set_coder_state(coder, STATE_REFACTORING);
 	print_status(coder, "is refactoring");
-	usleep(coder->config->time_to_refactor * 1000);
+	// usleep(coder->config->time_to_refactor * 1000);
+	if (!sleep_interruptible(coder, coder->config->time_to_refactor))
+		return (0);
 	if (all_coders_done(coder))
 		set_simulation_stop(coder->config, 1);
 	return (0);
